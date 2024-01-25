@@ -10,6 +10,11 @@ defmodule Streamer.Application do
     children = [
       # Starts a worker by calling: Streamer.Worker.start_link(arg)
       # {Streamer.Worker, arg}
+      {
+        Phoenix.PubSub,
+        # the adapter name will instruct PubSub to use pg adapter which will give us distributed process groups
+        name: Streamer.PubSub, adapter_name: Phoenix.PubSub.PG2
+      }
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

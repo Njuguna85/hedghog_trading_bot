@@ -13,6 +13,10 @@ defmodule Naive.Trader do
   end
 
   def init(%{symbol: symbol, profit_interval: profit_interval}) do
+    # subscribe to the TRADE_EVENTS pubsub channel
+
+    Phoenix.PubSub.subscribe(Streamer.PubSub, "TRADE_EVENTS:#{symbol}")
+
     # Binance rest api only accepts upper cased symbols
     symbol = String.upcase(symbol)
 
@@ -39,7 +43,7 @@ defmodule Naive.Trader do
   end
 
   # dealing with a "new" trader, this pattern match on buy order of nil
-  def handle_cast(%TradeEvent{price: price}, %State{symbol: symbol, buy_order: nil} = state) do
+  def handle_info(%TradeEvent{price: price}, %State{symbol: symbol, buy_order: nil} = state) do
     # hardcoded
     quantity = "100"
 
@@ -52,7 +56,7 @@ defmodule Naive.Trader do
   end
 
   # monitor for an event that matches our by order id and quantity to confirm that our buy order got filled
-  def handle_cast(
+  def handle_info(
         %TradeEvent{
           buyer_order_id: order_id,
           quantity: quantity
@@ -96,7 +100,7 @@ defmodule Naive.Trader do
 
   # a trader want to confirm that his sell order was filled
   # otherwise, there is nothing else to do for the trader
-  def handle_cast(
+  def handle_info(
         %TradeEvent{seller_order_id: order_id, quantity: quantity},
         %State{sell_order: %Binance.OrderResponse{order_id: order_id, orig_qty: quantity}} = state
       ) do
@@ -107,7 +111,7 @@ defmodule Naive.Trader do
   end
 
   # fallback
-  def handle_cast(%TradeEvent{}, state) do
+  def handle_info(%TradeEvent{}, state) do
     {:noreply, state}
   end
 end

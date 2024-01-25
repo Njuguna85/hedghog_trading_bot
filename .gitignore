@@ -23,3 +23,5 @@ erl_crash.dump
 /tmp/
 
 config/secrets.exs
+
+ABOUT.md
