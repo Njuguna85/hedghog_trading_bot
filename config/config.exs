@@ -18,3 +18,6 @@ config :logger,
 # format: "$date $time [$level] $metadata$message\n",
 # metadata: [:user_id]
 #
+if File.exists?("config/secrets.exs") do
+  import_config("secrets.exs")
+end

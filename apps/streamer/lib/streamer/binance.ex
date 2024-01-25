@@ -1,6 +1,8 @@
 defmodule Streamer.Binance do
   require Logger
+
   @stream_endpoint "wss://stream.binance.com:9443/ws/"
+
   # “trade” in the context of this documentation means an exchange of assets(coins/tokens) by two sides (buyer and seller).
 
   use WebSockex
@@ -40,5 +42,9 @@ defmodule Streamer.Binance do
     }
 
     Logger.debug("Trade event received " <> "#{trade_event.symbol}@#{trade_event.price}")
+
+    # call the Naive interface directly
+    # this creates a two way link between the streamer and naive aoo
+    Naive.send_event(trade_event)
   end
 end

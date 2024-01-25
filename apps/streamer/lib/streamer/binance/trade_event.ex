@@ -12,6 +12,8 @@ defmodule Streamer.Binance.TradeEvent do
     :buyer_market_maker
   ]
 
+  # this module will hold all the trade event's information
+
   # {
   #   "e": "trade",     // Event type
   #   "E": 123456789,   // Event time
